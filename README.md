@@ -87,13 +87,13 @@ Visit [http://127.0.0.1:8000](http://127.0.0.1:8000) to explore!
 <summary>🖥️ <strong>Desktop Views</strong></summary>
 
 ### 🧑‍🎓 User Dashboard
-![User Dashboard](static/images/screenshots/user-dashboard.png)
+![User Dashboard](static/images/user-dashboard.png)
 
 ### ⚙️ Admin Panel
-![Admin Panel](static/images/screenshots/admin-panel.png)
+![Admin Panel](static/images/admin-panel.png)
 
 ### 🔍 Book Search
-![Book Search](static/images/screenshots/book-search.png)
+![Book Search](static/images/book-search.png)
 
 </details>
 
@@ -129,7 +129,7 @@ library-management-system/
 ├── manage.py
 ├── requirements.txt
 └── README.md
-
+  ```
 ---
 
 📞 Contact
