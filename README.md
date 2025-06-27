@@ -90,14 +90,13 @@ Visit [http://127.0.0.1:8000](http://127.0.0.1:8000) to explore!
 ![User Dashboard](static/images/user-dashboard.png)
 
 ### ⚙️ Admin Panel
-![Admin Panel](static/images/admin-panel.png)
+![Admin Panel](static/images/admin-dashboard.png)
 
 ### 🔍 Book Search
 ![Book Search](static/images/book-search.png)
 
 </details>
 
----
 
 ## 🛠️ Tech Stack
 
@@ -109,7 +108,6 @@ Visit [http://127.0.0.1:8000](http://127.0.0.1:8000) to explore!
 | Authentication  | Django Auth            |
 | Deployment      | Localhost / PythonAnywhere / Heroku (optional) |
 
----
 
 ## 📁 Project Structure
 
@@ -130,7 +128,6 @@ library-management-system/
 ├── requirements.txt
 └── README.md
   ```
----
 
 📞 Contact
 👨‍💻 Developers: Deepkumar Patel & Deep Jasani & Het Anghan & Sohil Pansuriya
