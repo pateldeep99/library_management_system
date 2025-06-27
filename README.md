@@ -75,12 +75,11 @@ python manage.py loaddata sample_books.json
 
 # Run the server
 python manage.py runserver
-
-## 🚀 Launch the Project
+```
+### 🚀 Launch the Project
 
 Visit [http://127.0.0.1:8000](http://127.0.0.1:8000) to explore!
 
----
 
 ## 📸 Screenshots
 
