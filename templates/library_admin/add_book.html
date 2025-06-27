@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+
+{% block title %}Add Book - Library Management System{% endblock %}
+
+{% block content %}
+<div class="admin-layout">
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h3><i class="fas fa-user-shield"></i> Admin Panel</h3>
+            <p>Welcome, {{ user.first_name }}!</p>
+        </div>
+        <ul class="sidebar-nav">
+            <li><a href="{% url 'library_admin:admin_dashboard' %}">
+                <i class="fas fa-tachometer-alt"></i> Dashboard
+            </a></li>
+            <li><a href="{% url 'library_admin:manage_books' %}" class="active">
+                <i class="fas fa-book"></i> Manage Books
+            </a></li>
+            <li><a href="{% url 'library_admin:manage_users' %}">
+                <i class="fas fa-users"></i> Manage Users
+            </a></li>
+            <li><a href="{% url 'library_admin:manage_transactions' %}">
+                <i class="fas fa-exchange-alt"></i> Transactions
+            </a></li>
+            <li><a href="{% url 'users:logout' %}">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </a></li>
+        </ul>
+    </div>
+    
+    <div class="admin-content">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h2 class="card-title">
+                    <i class="fas fa-plus"></i> Add New Book
+                </h2>
+                <a href="{% url 'library_admin:manage_books' %}" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Back to Books
+                </a>
+            </div>
+            
+            <form method="post" data-validate style="max-width: 600px;">
+                {% csrf_token %}
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div class="form-group">
+                        <label class="form-label" for="id_book_title">Book Title:</label>
+                        {{ form.book_title }}
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="id_book_author">Author:</label>
+                        {{ form.book_author }}
+                    </div>
+                </div>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div class="form-group">
+                        <label class="form-label" for="id_category">Category:</label>
+                        {{ form.category }}
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="id_book_copies">Number of Copies:</label>
+                        {{ form.book_copies }}
+                    </div>
+                </div>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div class="form-group">
+                        <label class="form-label" for="id_publication_year">Publication Year:</label>
+                        {{ form.publication_year }}
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="id_publication_name">Publisher:</label>
+                        {{ form.publication_name }}
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="id_book_isbn">ISBN:</label>
+                    {{ form.book_isbn }}
+                </div>
+                
+                <div style="display: flex; gap: 10px; margin-top: 30px;">
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-save"></i> Add Book
+                    </button>
+                    <a href="{% url 'library_admin:manage_books' %}" class="btn btn-secondary">
+                        <i class="fas fa-times"></i> Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

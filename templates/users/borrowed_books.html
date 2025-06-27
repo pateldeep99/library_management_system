@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+
+{% block title %}My Borrowed Books - Library Management System{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h2 class="card-title">
+            <i class="fas fa-bookmark"></i> My Borrowed Books
+        </h2>
+        <a href="{% url 'users:book_list' %}" class="btn btn-primary">
+            <i class="fas fa-book"></i> Browse More Books
+        </a>
+    </div>
+    
+    {% if transactions %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th><i class="fas fa-book"></i> Book Title</th>
+                    <th><i class="fas fa-calendar-alt"></i> Borrow Date</th>
+                    <th><i class="fas fa-calendar-check"></i> Due Date</th>
+                    <th><i class="fas fa-calendar-times"></i> Return Date</th>
+                    <th><i class="fas fa-info-circle"></i> Status</th>
+                    <th><i class="fas fa-cog"></i> Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for transaction in transactions %}
+                <tr>
+                    <td>
+                        <strong>{{ transaction.book_title }}</strong><br>
+                        <small class="text-muted">by {{ transaction.book.book_author }}</small>
+                    </td>
+                    <td data-timestamp="{{ transaction.borrow_date.isoformat }}">
+                        {{ transaction.borrow_date|date:"M d, Y" }}
+                    </td>
+                    <td>
+                        {{ transaction.due_date|date:"M d, Y" }}
+                        {% if transaction.transaction_status == 'borrowed' and transaction.due_date|date:"Y-m-d" < today|date:"Y-m-d" %}
+                            <br><small style="color: #dc3545;"><i class="fas fa-exclamation-triangle"></i> Overdue</small>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if transaction.return_date %}
+                            {{ transaction.return_date|date:"M d, Y" }}
+                        {% else %}
+                            <span class="text-muted">Not returned</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <span class="book-status 
+                            {% if transaction.transaction_status == 'borrowed' %}status-borrowed
+                            {% elif transaction.transaction_status == 'returned' %}status-available
+                            {% else %}status-borrowed
+                            {% endif %}">
+                            {% if transaction.transaction_status == 'borrowed' %}
+                                <i class="fas fa-book-reader"></i> Borrowed
+                            {% elif transaction.transaction_status == 'returned' %}
+                                <i class="fas fa-check-circle"></i> Returned
+                            {% else %}
+                                <i class="fas fa-exclamation-triangle"></i> {{ transaction.get_transaction_status_display }}
+                            {% endif %}
+                        </span>
+                    </td>
+                    <td>
+                        {% if transaction.transaction_status == 'borrowed' %}
+                            <a href="{% url 'users:return_book' transaction.id %}" 
+                               class="btn btn-warning btn-return" 
+                               data-book-title="{{ transaction.book_title }}">
+                                <i class="fas fa-undo"></i> Return
+                            </a>
+                        {% else %}
+                            <span class="text-muted">No actions</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <div style="text-align: center; padding: 50px;">
+            <i class="fas fa-bookmark" style="font-size: 3rem; color: #ccc; margin-bottom: 20px;"></i>
+            <h3>No Books Borrowed</h3>
+            <p>You haven't borrowed any books yet. Start exploring our collection!</p>
+            <a href="{% url 'users:book_list' %}" class="btn btn-primary">
+                <i class="fas fa-book"></i> Browse Books
+            </a>
+        </div>
+    {% endif %}
+</div>
+
+{% if transactions %}
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">
+            <i class="fas fa-info-circle"></i> Library Policies
+        </h3>
+    </div>
+    <div style="padding: 20px;">
+        <ul style="margin: 0; padding-left: 20px;">
+            <li><strong>Loan Period:</strong> Books can be borrowed for 6 days.</li>
+            <li><strong>Renewals:</strong> Contact the library to extend your borrowing period.</li>
+            <li><strong>Late Returns:</strong> Please return books on time to avoid penalties.</li>
+            <li><strong>Lost Books:</strong> Report lost books immediately to the library staff.</li>
+        </ul>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

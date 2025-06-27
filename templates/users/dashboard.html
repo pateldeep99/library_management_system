@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - Library Management System{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title">
+            <i class="fas fa-tachometer-alt"></i> Welcome, {{ user.first_name }}!
+        </h2>
+    </div>
+    
+    <div class="stats-container">
+        <div class="stat-card">
+            <div class="stat-number">{{ user_transactions|length }}</div>
+            <div class="stat-label">Books Borrowed</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">{{ recent_books|length }}+</div>
+            <div class="stat-label">Available Books</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">6</div>
+            <div class="stat-label">Days Loan Period</div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h3 class="card-title">
+            <i class="fas fa-star"></i> Featured Books
+        </h3>
+        <a href="{% url 'users:book_list' %}" class="btn btn-primary">View All Books</a>
+    </div>
+    
+    <div class="book-grid">
+        {% for book in recent_books %}
+        <div class="book-card">
+            <div class="book-title">{{ book.book_title }}</div>
+            <div class="book-author">by {{ book.book_author }}</div>
+            <div class="book-details">
+                <small>Published: {{ book.publication_year }} | {{ book.publication_name }}</small><br>
+                <small>Category: {{ book.category }}</small>
+            </div>
+            <div style="margin-bottom: 10px;">
+                <span class="book-status {% if book.availability_status %}status-available{% else %}status-borrowed{% endif %}">
+                    {% if book.availability_status %}Available{% else %}Borrowed{% endif %}
+                </span>
+            </div>
+            {% if book.availability_status %}
+                <a href="{% url 'users:borrow_book' book.id %}" class="btn btn-success btn-borrow" data-book-title="{{ book.book_title }}">
+                    <i class="fas fa-bookmark"></i> Borrow
+                </a>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% if user_transactions %}
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h3 class="card-title">
+            <i class="fas fa-history"></i> Recent Transactions
+        </h3>
+        <a href="{% url 'users:borrowed_books' %}" class="btn btn-secondary">View All</a>
+    </div>
+    
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Book Title</th>
+                <th>Borrow Date</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for transaction in user_transactions %}
+            <tr>
+                <td>{{ transaction.book_title }}</td>
+                <td data-timestamp="{{ transaction.borrow_date.isoformat }}">{{ transaction.borrow_date|date:"M d, Y" }}</td>
+                <td>
+                    <span class="book-status {% if transaction.transaction_status == 'borrowed' %}status-borrowed{% else %}status-available{% endif %}">
+                        {{ transaction.get_transaction_status_display }}
+                    </span>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endif %}
+{% endblock %}

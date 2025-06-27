@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+
+{% block title %}My Profile - Library Management System{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h2 class="card-title">
+            <i class="fas fa-user-circle"></i> My Profile
+        </h2>
+        <a href="{% url 'users:edit_profile' %}" class="btn btn-primary">
+            <i class="fas fa-edit"></i> Edit Profile
+        </a>
+    </div>
+    
+    <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 30px; align-items: start;">
+        <!-- Profile Picture & Basic Info -->
+        <div style="text-align: center;">
+            <div style="width: 150px; height: 150px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; color: white; font-size: 3rem;">
+                <i class="fas fa-user"></i>
+            </div>
+            <h3 style="margin-bottom: 5px;">{{ user.first_name }} {{ user.last_name }}</h3>
+            <p style="color: #6c757d; margin-bottom: 15px;">@{{ user.username }}</p>
+            <span style="background: #28a745; color: white; padding: 5px 15px; border-radius: 20px; font-size: 14px;">
+                <i class="fas fa-user"></i> Library Member
+            </span>
+        </div>
+        
+        <!-- Profile Details -->
+        <div>
+            <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+                <h4 style="margin-bottom: 15px; color: #495057;">
+                    <i class="fas fa-info-circle"></i> Personal Information
+                </h4>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                    <div>
+                        <strong>Email:</strong><br>
+                        <span style="color: #6c757d;">{{ user.email }}</span>
+                    </div>
+                    <div>
+                        <strong>Phone:</strong><br>
+                        <span style="color: #6c757d;">{{ profile.user_contact|default:"Not provided" }}</span>
+                    </div>
+                    <div style="grid-column: 1 / -1;">
+                        <strong>Address:</strong><br>
+                        <span style="color: #6c757d;">{{ profile.user_address|default:"Not provided" }}</span>
+                    </div>
+                    <div>
+                        <strong>Member Since:</strong><br>
+                        <span style="color: #6c757d;">{{ profile.created_at|date:"F d, Y" }}</span>
+                    </div>
+                    <div>
+                        <strong>Last Login:</strong><br>
+                        <span style="color: #6c757d;">{{ user.last_login|date:"M d, Y - H:i" }}</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="background: #f8f9fa; padding: 20px; border-radius: 10px;">
+                <h4 style="margin-bottom: 15px; color: #495057;">
+                    <i class="fas fa-chart-bar"></i> Library Statistics
+                </h4>
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
+                    <div style="text-align: center; padding: 15px; background: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                        <div style="font-size: 2rem; color: #667eea; margin-bottom: 5px;">{{ total_borrowed }}</div>
+                        <div style="font-size: 14px; color: #6c757d;">Total Borrowed</div>
+                    </div>
+                    <div style="text-align: center; padding: 15px; background: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                        <div style="font-size: 2rem; color: #28a745; margin-bottom: 5px;">{{ books_returned }}</div>
+                        <div style="font-size: 14px; color: #6c757d;">Books Returned</div>
+                    </div>
+                    <div style="text-align: center; padding: 15px; background: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                        <div style="font-size: 2rem; color: #ffc107; margin-bottom: 5px;">{{ currently_borrowed }}</div>
+                        <div style="font-size: 14px; color: #6c757d;">Currently Borrowed</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">
+            <i class="fas fa-cogs"></i> Quick Actions
+        </h3>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; padding: 20px;">
+        <a href="{% url 'users:edit_profile' %}" class="btn btn-primary">
+            <i class="fas fa-edit"></i> Edit Profile
+        </a>
+        <a href="{% url 'users:book_list' %}" class="btn btn-success">
+            <i class="fas fa-book"></i> Browse Books
+        </a>
+        <a href="{% url 'users:borrowed_books' %}" class="btn btn-warning">
+            <i class="fas fa-bookmark"></i> My Borrowed Books
+        </a>
+        <a href="{% url 'users:dashboard' %}" class="btn btn-secondary">
+            <i class="fas fa-tachometer-alt"></i> Dashboard
+        </a>
+    </div>
+</div>
+{% endblock %}

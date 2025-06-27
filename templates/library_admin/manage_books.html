@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+
+{% block title %}Manage Books - Library Management System{% endblock %}
+
+{% block content %}
+<div class="admin-layout">
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h3><i class="fas fa-user-shield"></i> Admin Panel</h3>
+            <p>Welcome, {{ user.first_name }}!</p>
+        </div>
+        <ul class="sidebar-nav">
+            <li><a href="{% url 'library_admin:admin_dashboard' %}">
+                <i class="fas fa-tachometer-alt"></i> Dashboard
+            </a></li>
+            <li><a href="{% url 'library_admin:manage_books' %}" class="active">
+                <i class="fas fa-book"></i> Manage Books
+            </a></li>
+            <li><a href="{% url 'library_admin:manage_users' %}">
+                <i class="fas fa-users"></i> Manage Users
+            </a></li>
+            <li><a href="{% url 'library_admin:manage_transactions' %}">
+                <i class="fas fa-exchange-alt"></i> Transactions
+            </a></li>
+        </ul>
+    </div>
+    
+    <div class="admin-content">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h2 class="card-title">
+                    <i class="fas fa-book"></i> Manage Books ({{ books|length }})
+                </h2>
+                <a href="{% url 'library_admin:add_book' %}" class="btn btn-success">
+                    <i class="fas fa-plus"></i> Add New Book
+                </a>
+            </div>
+            
+            {% if books %}
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Author</th>
+                            <th>Category</th>
+                            <th>Copies</th>
+                            <th>Year</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for book in books %}
+                        <tr>
+                            <td>
+                                <strong>{{ book.book_title }}</strong><br>
+                                <small class="text-muted">ISBN: {{ book.book_isbn }}</small>
+                            </td>
+                            <td>{{ book.book_author }}</td>
+                            <td>{{ book.category }}</td>
+                            <td>{{ book.book_copies }}</td>
+                            <td>{{ book.publication_year }}</td>
+                            <td>
+                                <span class="book-status {% if book.availability_status %}status-available{% else %}status-borrowed{% endif %}">
+                                    {% if book.availability_status %}Available{% else %}Not Available{% endif %}
+                                </span>
+                            </td>
+                            <td>
+                                <div class="d-flex gap-2">
+                                    <a href="{% url 'library_admin:edit_book' book.id %}" class="btn btn-warning btn-sm">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <form method="post" action="{% url 'library_admin:delete_book' book.id %}" style="display: inline;">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-danger btn-sm" 
+                                                data-confirm="Are you sure you want to delete '{{ book.book_title }}'?">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <div style="text-align: center; padding: 50px;">
+                    <i class="fas fa-book" style="font-size: 3rem; color: #ccc; margin-bottom: 20px;"></i>
+                    <h3>No Books Found</h3>
+                    <p>Start building your library collection by adding books.</p>
+                    <a href="{% url 'library_admin:add_book' %}" class="btn btn-success">
+                        <i class="fas fa-plus"></i> Add First Book
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Library Management System{% endblock %}</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Dropdown Styles */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-toggle {
+            background: none !important;
+            border: none !important;
+            color: white !important;
+            cursor: pointer !important;
+            font-size: 14px !important;
+            padding: 8px 16px !important;
+            border-radius: 5px !important;
+            transition: background-color 0.3s !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            gap: 5px !important;
+            font-family: inherit !important;
+        }
+
+        .dropdown-toggle:hover {
+            background-color: rgba(255,255,255,0.2) !important;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            right: 0;
+            background-color: white;
+            min-width: 220px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            z-index: 1000;
+            border-radius: 8px;
+            overflow: hidden;
+            top: 100%;
+            margin-top: 8px;
+            border: 1px solid #e9ecef;
+        }
+
+        .dropdown-content.show {
+            display: block;
+            animation: dropdownFadeIn 0.3s ease;
+        }
+
+        @keyframes dropdownFadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .dropdown-content::before {
+            content: '';
+            position: absolute;
+            top: -8px;
+            right: 20px;
+            width: 0;
+            height: 0;
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-bottom: 8px solid white;
+        }
+
+        .dropdown-content a {
+            color: #333 !important;
+            padding: 12px 18px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: background-color 0.2s;
+            font-size: 14px;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #f8f9fa !important;
+            color: #667eea !important;
+        }
+
+        .dropdown-item-logout {
+            color: #dc3545 !important;
+            border-top: 1px solid #e9ecef;
+        }
+
+        .dropdown-item-logout:hover {
+            background-color: #f8d7da !important;
+            color: #721c24 !important;
+        }
+
+        .dropdown-content a i {
+            width: 16px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="{% url 'home' %}" class="navbar-brand">
+                <i class="fas fa-book"></i> Library Management
+            </a>
+            <ul class="navbar-nav">
+                {% if user.is_authenticated %}
+                    {% if user.is_staff %}
+                        <li><a href="{% url 'library_admin:admin_dashboard' %}">
+                            <i class="fas fa-tachometer-alt"></i> Admin Dashboard
+                        </a></li>
+                <li>
+                    <form method="post" action="{% url 'users:logout' %}">
+                        {% csrf_token %}
+                            <button type="submit" style="background: none; border: none; color: white; cursor: pointer; font-size: 14px; padding: 8px 16px; border-radius: 5px; transition: background-color 0.3s;">
+                                <i class="fas fa-sign-out-alt"></i> Logout ({{ user.username }})
+                            </button>
+                    </form>
+                </li>
+                    {% else %}
+                        <li><a href="{% url 'users:dashboard' %}">
+                            <i class="fas fa-tachometer-alt"></i> Dashboard
+                        </a></li>
+                        <li><a href="{% url 'users:book_list' %}">
+                            <i class="fas fa-book"></i> Books
+                        </a></li>
+                        <li><a href="{% url 'users:borrowed_books' %}">
+                            <i class="fas fa-bookmark"></i> My Books
+                        </a></li>
+                        <li class="dropdown">
+                            <button class="dropdown-toggle" onclick="toggleDropdown(event, this)">
+                                <i class="fas fa-user-circle"></i>
+                                {{ user.first_name|default:user.username }}
+                                <i class="fas fa-chevron-down"></i>
+                            </button>
+                            <div class="dropdown-content">
+                                <a href="{% url 'users:profile' %}">
+                                    <i class="fas fa-user"></i> My Profile
+                                </a>
+                                <a href="{% url 'users:edit_profile' %}">
+                                    <i class="fas fa-edit"></i> Edit Profile
+                                </a>
+                                <a href="{% url 'users:borrowed_books' %}">
+                                    <i class="fas fa-bookmark"></i> My Books
+                                </a>
+                                <a href="{% url 'users:book_list' %}">
+                                    <i class="fas fa-book"></i> Browse Books
+                                </a>
+                                <a href="#" onclick="confirmLogout(event)" class="dropdown-item-logout">
+                                    <i class="fas fa-sign-out-alt"></i> Logout
+                                </a>
+                            </div>
+                        </li>
+                    {% endif %}
+                {% else %}
+                    <li><a href="{% url 'users:login' %}">
+                        <i class="fas fa-sign-in-alt"></i> User Login
+                    </a></li>
+                    <li><a href="{% url 'library_admin:admin_login' %}">
+                        <i class="fas fa-user-shield"></i> Admin Login
+                    </a></li>
+                    <li><a href="{% url 'users:register' %}">
+                        <i class="fas fa-user-plus"></i> Register
+                    </a></li>
+                {% endif %}
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hidden logout form -->
+    <form id="logout-form" method="post" action="{% url 'users:logout' %}" style="display: none;">
+        {% csrf_token %}
+    </form>
+
+    <main class="main-content">
+        {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                    <div class="message {{ message.tags }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2024 Library Management System. All rights reserved.</p>
+    </footer>
+
+    <script>
+        function toggleDropdown(event, button) {
+            event.stopPropagation();
+
+            document.querySelectorAll('.dropdown-content').forEach(dropdown => {
+                if (dropdown !== button.nextElementSibling) {
+                    dropdown.classList.remove('show');
+                }
+            });
+
+            const dropdown = button.nextElementSibling;
+            dropdown.classList.toggle('show');
+        }
+
+        document.addEventListener('click', function(event) {
+            if (!event.target.closest('.dropdown')) {
+                document.querySelectorAll('.dropdown-content').forEach(dropdown => {
+                    dropdown.classList.remove('show');
+                });
+            }
+        });
+
+        function confirmLogout(event) {
+            event.preventDefault();
+            event.stopPropagation();
+
+            if (confirm('🚪 Are you sure you want to logout?')) {
+                document.getElementById('logout-form').submit();
+            }
+        }
+
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                document.querySelectorAll('.dropdown-content').forEach(dropdown => {
+                    dropdown.classList.remove('show');
+                });
+            }
+        });
+
+        setTimeout(function() {
+            const messages = document.querySelectorAll('.messages .message');
+            messages.forEach(message => {
+                message.style.transition = 'opacity 0.5s';
+                message.style.opacity = '0';
+                setTimeout(() => {
+                    if (message.parentNode) {
+                        message.remove();
+                    }
+                }, 500);
+            });
+        }, 5000);
+    </script>
+
+    <script src="{% static 'js/main.js' %}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

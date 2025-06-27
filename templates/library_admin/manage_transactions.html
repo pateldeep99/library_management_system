@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+
+{% block title %}Manage Transactions - Library Management System{% endblock %}
+
+{% block content %}
+<div class="admin-layout">
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h3><i class="fas fa-user-shield"></i> Admin Panel</h3>
+            <p>Welcome, {{ user.first_name }}!</p>
+        </div>
+        <ul class="sidebar-nav">
+            <li><a href="{% url 'library_admin:admin_dashboard' %}">
+                <i class="fas fa-tachometer-alt"></i> Dashboard
+            </a></li>
+            <li><a href="{% url 'library_admin:manage_books' %}">
+                <i class="fas fa-book"></i> Manage Books
+            </a></li>
+            <li><a href="{% url 'library_admin:manage_users' %}">
+                <i class="fas fa-users"></i> Manage Users
+            </a></li>
+            <li><a href="{% url 'library_admin:manage_transactions' %}" class="active">
+                <i class="fas fa-exchange-alt"></i> Transactions
+            </a></li>
+
+        </ul>
+    </div>
+
+    <div class="admin-content">
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">
+                    <i class="fas fa-exchange-alt"></i> All Transactions ({{ transactions|length }})
+                </h2>
+            </div>
+
+            {% if transactions %}
+                <div style="overflow-x: auto;">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>User</th>
+                                <th>Book Title</th>
+                                <th>Borrow Date</th>
+                                <th>Due Date</th>
+                                <th>Return Date</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for transaction in transactions %}
+                            <tr>
+                                <td>
+                                    <strong>{{ transaction.user.first_name }} {{ transaction.user.last_name }}</strong><br>
+                                    <small style="color: #6c757d;">{{ transaction.user.username }}</small>
+                                </td>
+                                <td>
+                                    <strong>{{ transaction.book_title }}</strong><br>
+                                    <small style="color: #6c757d;">by {{ transaction.book.book_author }}</small>
+                                </td>
+                                <td>{{ transaction.borrow_date|date:"M d, Y" }}</td>
+                                <td>{{ transaction.due_date|date:"M d, Y" }}</td>
+                                <td>
+                                    {% if transaction.return_date %}
+                                        {{ transaction.return_date|date:"M d, Y" }}
+                                    {% else %}
+                                        <span style="color: #6c757d;">Not returned</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <span class="book-status
+                                        {% if transaction.transaction_status == 'borrowed' %}status-borrowed
+                                        {% elif transaction.transaction_status == 'returned' %}status-available
+                                        {% else %}status-borrowed
+                                        {% endif %}">
+                                        {% if transaction.transaction_status == 'borrowed' %}
+                                            <i class="fas fa-book-reader"></i> Borrowed
+                                        {% elif transaction.transaction_status == 'returned' %}
+                                            <i class="fas fa-check-circle"></i> Returned
+                                        {% else %}
+                                            {{ transaction.get_transaction_status_display }}
+                                        {% endif %}
+                                    </span>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div style="text-align: center; padding: 50px;">
+                    <i class="fas fa-exchange-alt" style="font-size: 3rem; color: #ccc; margin-bottom: 20px;"></i>
+                    <h3>No Transactions Found</h3>
+                    <p>No borrowing transactions have been recorded yet.</p>
+                    <a href="{% url 'library_admin:manage_books' %}" class="btn btn-primary">
+                        <i class="fas fa-book"></i> Manage Books
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+
+        {% if transactions %}
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="fas fa-chart-bar"></i> Transaction Statistics
+                </h3>
+            </div>
+
+            <div class="stats-container">
+                <div class="stat-card">
+                    <div class="stat-number">{{ transactions|length }}</div>
+                    <div class="stat-label">Total Transactions</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">
+                        {% with borrowed=transactions|length %}{{ borrowed }}{% endwith %}
+                    </div>
+                    <div class="stat-label">Active Borrowings</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">0</div>
+                    <div class="stat-label">Overdue Books</div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

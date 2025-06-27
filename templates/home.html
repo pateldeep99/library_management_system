@@ -1,0 +1,132 @@
+{% extends 'base.html' %}
+
+{% block title %}Home - Library Management System{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header text-center">
+        <h1 class="card-title">Welcome to Library Management System</h1>
+        <p>Your digital gateway to knowledge and learning</p>
+    </div>
+    
+    <!-- Show current login status -->
+    {% if user.is_authenticated %}
+        <div style="background: #d4edda; color: #155724; padding: 15px; margin: 20px 0; border-radius: 5px; text-align: center;">
+            <strong>You are logged in as: {{ user.username }}</strong>
+            {% if user.is_staff %}
+                <span style="background: #fd7e14; color: white; padding: 2px 8px; border-radius: 3px; margin-left: 10px;">
+                    <i class="fas fa-user-shield"></i> Admin
+                </span>
+            {% else %}
+                <span style="background: #28a745; color: white; padding: 2px 8px; border-radius: 3px; margin-left: 10px;">
+                    <i class="fas fa-user"></i> User
+                </span>
+            {% endif %}
+        </div>
+    {% endif %}
+
+    <div style="text-align: center; margin-bottom: 30px;">
+        <i class="fas fa-book-open" style="font-size: 4rem; color: #667eea; margin-bottom: 20px;"></i>
+        <p style="font-size: 1.2rem; color: #666; max-width: 600px; margin: 0 auto;">
+            Discover thousands of books, manage your reading journey, and explore the world of knowledge
+            with our comprehensive library management system.
+        </p>
+    </div>
+
+    <div class="stats-container">
+        <div class="stat-card">
+            <div class="stat-number">
+                <i class="fas fa-book"></i>
+            </div>
+            <div class="stat-label">Extensive Collection</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">
+                <i class="fas fa-users"></i>
+            </div>
+            <div class="stat-label">Active Community</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">
+                <i class="fas fa-clock"></i>
+            </div>
+            <div class="stat-label">24/7 Access</div>
+        </div>
+    </div>
+
+    <!-- Login/Dashboard Options -->
+    {% if not user.is_authenticated %}
+        <div style="text-align: center; margin-top: 30px;">
+            <h3 style="margin-bottom: 20px;">Choose Your Access:</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; max-width: 600px; margin: 0 auto;">
+                <a href="{% url 'users:register' %}" class="btn btn-primary">
+                    <i class="fas fa-user-plus"></i> Register as User
+                </a>
+                <a href="{% url 'users:login' %}" class="btn btn-success">
+                    <i class="fas fa-sign-in-alt"></i> User Login
+                </a>
+                <a href="{% url 'library_admin:admin_login' %}" class="btn btn-warning">
+                    <i class="fas fa-user-shield"></i> Admin Login
+                </a>
+            </div>
+        </div>
+    {% else %}
+        <div style="text-align: center; margin-top: 30px;">
+            <h3 style="margin-bottom: 20px;">Quick Access:</h3>
+            <div style="display: flex; justify-content: center; gap: 15px; flex-wrap: wrap;">
+                {% if user.is_staff %}
+                    <a href="{% url 'library_admin:admin_dashboard' %}" class="btn btn-primary">
+                        <i class="fas fa-tachometer-alt"></i> Admin Dashboard
+                    </a>
+                    <a href="{% url 'users:dashboard' %}" class="btn btn-secondary">
+                        <i class="fas fa-user"></i> User Dashboard
+                    </a>
+                {% else %}
+                    <a href="{% url 'users:dashboard' %}" class="btn btn-primary">
+                        <i class="fas fa-tachometer-alt"></i> My Dashboard
+                    </a>
+                    <a href="{% url 'users:book_list' %}" class="btn btn-success">
+                        <i class="fas fa-book"></i> Browse Books
+                    </a>
+                {% endif %}
+
+                <!-- Logout Button -->
+                <form method="post" action="{% url 'users:logout' %}" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </form>
+            </div>
+        </div>
+    {% endif %}
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title">Features</h2>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+        <div style="text-align: center; padding: 20px;">
+            <i class="fas fa-search" style="font-size: 2rem; color: #667eea; margin-bottom: 10px;"></i>
+            <h3>Advanced Search</h3>
+            <p>Find books by title, author, or publication year with our powerful search engine.</p>
+        </div>
+        <div style="text-align: center; padding: 20px;">
+            <i class="fas fa-bookmark" style="font-size: 2rem; color: #667eea; margin-bottom: 10px;"></i>
+            <h3>Easy Borrowing</h3>
+            <p>Borrow books with just a click and track your reading history effortlessly.</p>
+        </div>
+        <div style="text-align: center; padding: 20px;">
+            <i class="fas fa-bell" style="font-size: 2rem; color: #667eea; margin-bottom: 10px;"></i>
+            <h3>Smart Reminders</h3>
+            <p>Get notified about due dates and never miss a return deadline again.</p>
+        </div>
+        <div style="text-align: center; padding: 20px;">
+            <i class="fas fa-shield-alt" style="font-size: 2rem; color: #667eea; margin-bottom: 10px;"></i>
+            <h3>Secure Access</h3>
+            <p>Your data is protected with advanced security measures and encryption.</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

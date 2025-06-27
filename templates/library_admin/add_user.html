@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit User - Library Management System{% endblock %}
+
+{% block content %}
+<div class="admin-layout">
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h3><i class="fas fa-user-shield"></i> Admin Panel</h3>
+            <p>Welcome, {{ user.first_name }}!</p>
+        </div>
+        <ul class="sidebar-nav">
+            <li><a href="{% url 'library_admin:admin_dashboard' %}">
+                <i class="fas fa-tachometer-alt"></i> Dashboard
+            </a></li>
+            <li><a href="{% url 'library_admin:manage_books' %}">
+                <i class="fas fa-book"></i> Manage Books
+            </a></li>
+            <li><a href="{% url 'library_admin:manage_users' %}" class="active">
+                <i class="fas fa-users"></i> Manage Users
+            </a></li>
+            <li><a href="{% url 'library_admin:manage_transactions' %}">
+                <i class="fas fa-exchange-alt"></i> Transactions
+            </a></li>
+            <li>
+                <form method="post" action="{% url 'users:logout' %}" style="margin: 0;">
+                    {% csrf_token %}
+                    <button type="submit" style="background: none; border: none; color: white; cursor: pointer; padding: 12px 20px; width: 100%; text-align: left; display: block; transition: background-color 0.3s;">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </form>
+            </li>
+        </ul>
+    </div>
+    
+    <div class="admin-content">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h2 class="card-title">
+                    <i class="fas fa-edit"></i> Edit User: {{ user_obj.username }}
+                </h2>
+                <a href="{% url 'library_admin:manage_users' %}" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Back to Users
+                </a>
+            </div>
+            
+            <form method="post" data-validate style="max-width: 600px;">
+                {% csrf_token %}
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div class="form-group">
+                        <label class="form-label">First Name:</label>
+                        {{ form.first_name }}
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Last Name:</label>
+                        {{ form.last_name }}
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Username:</label>
+                    {{ form.username }}
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Email:</label>
+                    {{ form.email }}
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Contact Number:</label>
+                    {{ form.contact }}
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Address:</label>
+                    {{ form.address }}
+                </div>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div class="form-group">
+                        <label class="form-label">
+                            {{ form.is_active }} Active Account
+                        </label>
+                        <small style="color: #6c757d;">Uncheck to deactivate user</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">
+                            {{ form.is_staff }} Admin Privileges
+                        </label>
+                        <small style="color: #6c757d;">Check to give admin access</small>
+                    </div>
+                </div>
+                
+                <div style="display: flex; gap: 10px; margin-top: 30px;">
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-save"></i> Update User
+                    </button>
+                    <a href="{% url 'library_admin:manage_users' %}" class="btn btn-secondary">
+                        <i class="fas fa-times"></i> Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

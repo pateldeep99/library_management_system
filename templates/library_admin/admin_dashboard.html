@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+
+{% block title %}Admin Dashboard - Library Management System{% endblock %}
+
+{% block content %}
+<div class="admin-layout">
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h3><i class="fas fa-user-shield"></i> Admin Panel</h3>
+            <p>Welcome, {{ user.first_name }}!</p>
+        </div>
+        <ul class="sidebar-nav">
+            <li><a href="{% url 'library_admin:admin_dashboard' %}" class="active">
+                <i class="fas fa-tachometer-alt"></i> Dashboard
+            </a></li>
+            <li><a href="{% url 'library_admin:manage_books' %}">
+                <i class="fas fa-book"></i> Manage Books
+            </a></li>
+            <li><a href="{% url 'library_admin:manage_users' %}">
+                <i class="fas fa-users"></i> Manage Users
+            </a></li>
+            <li><a href="{% url 'library_admin:manage_transactions' %}">
+                <i class="fas fa-exchange-alt"></i> Transactions
+            </a></li>
+        </ul>
+    </div>
+    
+    <div class="admin-content">
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">
+                    <i class="fas fa-tachometer-alt"></i> Dashboard Overview
+                </h2>
+            </div>
+            
+            <div class="stats-container">
+                <div class="stat-card">
+                    <div class="stat-number">{{ total_books }}</div>
+                    <div class="stat-label">Total Books</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">{{ total_users }}</div>
+                    <div class="stat-label">Registered Users</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">{{ active_transactions }}</div>
+                    <div class="stat-label">Active Borrowings</div>
+                </div>
+                <div class="stat-card" style="background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%);">
+                    <div class="stat-number">{{ overdue_transactions }}</div>
+                    <div class="stat-label">Overdue Books</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="fas fa-clock"></i> Recent Transactions
+                </h3>
+            </div>
+            
+            {% if recent_transactions %}
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>User</th>
+                            <th>Book</th>
+                            <th>Borrow Date</th>
+                            <th>Due Date</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for transaction in recent_transactions %}
+                        <tr>
+                            <td>{{ transaction.user.first_name }} {{ transaction.user.last_name }}</td>
+                            <td>{{ transaction.book_title }}</td>
+                            <td>{{ transaction.borrow_date|date:"M d, Y" }}</td>
+                            <td>{{ transaction.due_date|date:"M d, Y" }}</td>
+                            <td>
+                                <span class="book-status 
+                                    {% if transaction.transaction_status == 'borrowed' %}status-borrowed
+                                    {% elif transaction.transaction_status == 'returned' %}status-available
+                                    {% else %}status-borrowed
+                                    {% endif %}">
+                                    {{ transaction.get_transaction_status_display }}
+                                </span>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <div style="text-align: center; padding: 30px;">
+                    <p>No recent transactions found.</p>
+                </div>
+            {% endif %}
+        </div>
+        
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="fas fa-tools"></i> Quick Actions
+                </h3>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; padding: 20px;">
+                <a href="{% url 'library_admin:add_book' %}" class="btn btn-success">
+                    <i class="fas fa-plus"></i> Add New Book
+                </a>
+                <a href="{% url 'library_admin:manage_books' %}" class="btn btn-primary">
+                    <i class="fas fa-book"></i> Manage Books
+                </a>
+                <a href="{% url 'library_admin:manage_users' %}" class="btn btn-primary">
+                    <i class="fas fa-users"></i> View Users
+                </a>
+                <a href="{% url 'library_admin:manage_transactions' %}" class="btn btn-warning">
+                    <i class="fas fa-list"></i> All Transactions
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
