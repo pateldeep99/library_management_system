@@ -2,11 +2,6 @@
 
 # 📚 Online Bookstore / Library Management System
 
-![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)
-![Django](https://img.shields.io/badge/django-4.2.7-green.svg)
-![Python](https://img.shields.io/badge/python-3.8+-blue.svg)
-![License](https://img.shields.io/badge/license-MIT-green.svg)
-![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)
 
 **An intuitive Django-based platform for managing book inventories, borrowing systems, and users in libraries or educational institutions.**
 
